@@ -17,6 +17,6 @@ start(_StartType, _StartArgs) ->
         lists:keyfind(evfs_file_server, 1, supervisor:which_children(Pid)),
     {ok, Pid, {FileServer, evfs:original_file_server(FileServer)}}.
 
-stop({_FileServer, OriginalFileServer} = State) ->
+stop({_FileServer, OriginalFileServer}) ->
     register(?FILE_SERVER, OriginalFileServer),
     ok.
