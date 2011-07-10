@@ -4,11 +4,11 @@ evfs: Erlang Virtual Filesystem
 This application allows to create virtual filesystems on top of standard
 `file` API. Imagine if you can do this:
 
-    > {ok, Bin} = file:read("http://www.google.com/").
+    > {ok, Bin} = file:read_file("http://www.google.com/").
 
 Or this:
 
-    > {ok, Bin} = file:read("config://host").
+    > {ok, Bin} = file:read_file("config://host").
 
 Looks interesting, right? Now, basically, because of the way evfs operates,
 you can feed unsuspecting Erlang code file names that are served off your VFSes. 
