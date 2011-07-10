@@ -16,7 +16,7 @@ That's where the fun begins.
 
 You can register any number of virtual FS handlers using `evfs:register/2` function.
 Also, by default, you get the handler that redirects file:// and plain filename requests
-to the original file server, but you can unregiser it with `evfs:unregister/1' if you need.
+to the original file server, but you can unregiser it with `evfs:unregister/1` if you need.
 
 Please bear in mind that this is a very early prototype. I still haven't implemented
 a behaviour for file I/O (`file_request` and `io_request). Not that it blocks you
