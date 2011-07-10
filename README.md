@@ -24,10 +24,7 @@ You can register any number of virtual FS handlers using `evfs:register/2` funct
 Also, by default, you get the handler that redirects file:// and plain filename requests
 to the original file server, but you can unregiser it with `evfs:unregister/1` if you need.
 
-Please bear in mind that this is a very early prototype. I still haven't implemented
-a behaviour for file I/O (`file_request` and `io_request`). Not that it blocks you
-from creating your VFS. It just will make it simpler. Right now you have to look into
-file_io_server.erl from OTP in order to figure out how to do this.
+Please bear in mind that this is a very early prototype. 
 
 For an example on how to build a VFS, look into `test/evfs_test_fs.erl`. Hopefully
 it will help.
