@@ -1,5 +1,6 @@
 -module(evfs_test_fs).
 -behaviour(evfs_handler).
+-behaviour(evfs_io_server).
 -export([init/1, supports/2, terminate/2]).
 -export([open/3, 
          read_file/2,
@@ -21,6 +22,7 @@
          make_symlink/3,
          copy/6
         ]).
+-export([io_list/1]).
 
 init(Args) ->
     {ok, Args}.
@@ -32,8 +34,9 @@ supports(_, State) ->
 
 %% Filesystem API
 
-open(_Filename, _Mode, State) ->
-    {ok, {error, enotsup}, State}.
+open(Filename, _Mode, State) ->
+    Child = evfs_io_server:start_link(?MODULE, Filename),
+    {ok, Child, State}.
 
 read_file(Filename, State) ->
     {ok, {ok, list_to_binary(Filename)}, State}.
@@ -92,3 +95,6 @@ copy(_SourceName, _SourceOpts, _DestName, _DestOpts, _Length, State) ->
 terminate(_Reason, _State) ->
     ok.
 
+%% IO server
+io_list(Handle) ->
+    Handle.
