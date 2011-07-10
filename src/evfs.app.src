@@ -1,0 +1,12 @@
+{application, evfs,
+ [
+  {description, "Erlang Virtual Filesystem"},
+  {vsn, git},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { evfs_app, []}},
+  {env, []}
+ ]}.

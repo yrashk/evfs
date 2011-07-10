@@ -1,0 +1,2 @@
+-define(FILE_SERVER, file_server_2).
+-define(DEFAULT_HANDLER, evfs_default_handler).
