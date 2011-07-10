@@ -21,6 +21,22 @@
          make_symlink/3,
          copy/6
         ]).
+-export([filename_absname/2,
+         filename_absname/3,
+         filename_absname_join/3,
+         filename_basename/2,
+         filename_basename/3,
+         filename_dirname/2,
+         filename_extension/2,
+         filename_join/2,
+         filename_join/3,
+         filename_pathtype/2,
+         filename_rootname/2,
+         filename_rootname/3,
+         filename_split/2,
+         filename_nativename/2,
+         filename_flatten/2,
+         filename_append/3]).
 
 init(FileServer) ->
     {ok, FileServer}.
@@ -92,6 +108,55 @@ copy(SourceName, SourceOpts, DestName, DestOpts, Length, FileServer) ->
 
 terminate(_Reason, _State) ->
     ok.
+
+%% filename
+filename_absname(File, State) ->
+    {ok, filename_1:absname(filename(File)), State}.
+
+filename_absname(File, Dir, State) ->
+    {ok, filename_1:absname(filename(File), Dir), State}.
+
+filename_absname_join(Dir, File, State) ->
+    {ok, filename_1:absname_join(filename(Dir), File), State}.
+
+filename_basename(File, State) ->
+    {ok, filename_1:basename(filename(File)), State}.
+
+filename_basename(File, Ext, State) ->
+    {ok, filename_1:basename(filename(File), Ext), State}.
+
+filename_dirname(File, State) ->
+    {ok, filename_1:dirname(filename(File)), State}.
+
+filename_extension(File, State) ->
+    {ok, filename_1:extension(filename(File)), State}.
+
+filename_join(Components, State) ->
+    {ok, filename_1:join([filename(hd(Components))|tl(Components)]), State}.
+
+filename_join(File1, File2, State) ->
+    {ok, filename_1:join(filename(File1), File2), State}.
+
+filename_pathtype(File, State) ->
+    {ok, filename_1:pathtype(filename(File)), State}.
+
+filename_rootname(File, State) ->
+    {ok, filename_1:rootname(filename(File)), State}.
+
+filename_rootname(File, Ext, State) ->
+    {ok, filename_1:rootname(filename(File), Ext), State}.
+
+filename_split(File, State) ->
+    {ok, filename_1:split(filename(File)), State}.
+
+filename_nativename(File, State) ->
+    {ok, filename_1:nativename(filename(File)), State}.
+
+filename_flatten(File, State) ->
+    {ok, filename_1:flatten(filename(File)), State}.
+
+filename_append(Dir, File, State) ->
+    {ok, filename_1:append(filename(Dir), File), State}.
 
 %% Internal
 filename("file://" ++ Filename) ->

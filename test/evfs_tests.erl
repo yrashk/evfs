@@ -21,20 +21,27 @@ t_pread() ->
     evfs:register(evfs_test_fs, []),
     {ok, File} = file:open("test://anyfile",[read]),
     ?assertEqual({ok, ["test://any"]}, file:pread(File, [{0,10}])).
-    
+
+t_filename() ->    
+    ?assertEqual("/", filename:dirname("/")),
+    ?assertEqual("/", filename:dirname("file:///")),
+    evfs:register(evfs_test_fs, []),
+    ?assertEqual("test://", filename:dirname("test://any")).
+
 evfs_test_() ->
     {foreach,
      fun () ->
-             application:start(evfs)
+             ok = application:start(evfs)
      end,
      fun (_) ->
-             application:stop(evfs)
+             ok = application:stop(evfs)
      end,
      [
       {"unregister", ?_test(t_unregister())},
       {"file:// scheme should route to the default file server", ?_test(t_file_scheme())},
       {"test_fs read_file", ?_test(t_read_file())},
-      {"test_fs pread", ?_test(t_pread())}
+      {"test_fs pread", ?_test(t_pread())},
+      {"test_fs & default fs filename", ?_test(t_filename())}
      ]
     }.
 

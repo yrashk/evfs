@@ -11,6 +11,7 @@ register(Handler, Args) ->
     register(?FILE_SERVER, Handler, Args).
 
 register(Server, Handler, Args) ->
+    {module, Handler} = code:ensure_loaded(Handler),
     gen_server:call(Server, {register_handler, Handler, Args}).
 
 

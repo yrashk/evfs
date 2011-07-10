@@ -23,6 +23,7 @@
          copy/6
         ]).
 -export([io_list/1]).
+-export([filename_dirname/2]).
 
 init(Args) ->
     {ok, Args}.
@@ -98,3 +99,7 @@ terminate(_Reason, _State) ->
 %% IO server
 io_list(Handle) ->
     Handle.
+
+%% Filename
+filename_dirname("test://" ++ _, State) ->
+    {ok, "test://", State}.

@@ -36,10 +36,17 @@ init(FileServer) ->
             Error
     end.
 
+-type filename_command() :: absname | absname_join | basename |
+                            dirname | extension | join | pathtype |
+                            rootname | split | nativename |
+                            find_src | flatten.
+
 -type file_server_command() :: 
         original_file_server |
         {unregister_handler, module()} |
         {register_handler, module(), term()} | 
+        %% Filename API
+        {filename, filename_command(), [term()]} |
         %% Filesystem API
         {open, file:filename(), [file:mode()]} |
         {read_file, file:filename()} |
@@ -89,6 +96,59 @@ handle_call({unregister_handler, Handler}, _From,
 handle_call(original_file_server, _From,
             #state{ file_server = FileServer } = State) ->
     {reply, FileServer, State };
+
+handle_call({filename, absname, [Filename]}, _From, State) ->
+    safe_call_handler(Filename, filename_absname, [Filename], State);
+
+handle_call({filename, absname, [Filename, Dir]}, _From, State) ->
+    safe_call_handler(Filename, filename_absname, [Filename, Dir], State);
+
+handle_call({filename, absname_join, [Dir, Filename]}, _From, State) ->
+    safe_call_handler(Dir, filename_absname_join, [Dir, Filename], State);
+
+handle_call({filename, basename, [Filename]}, _From, State) ->
+    safe_call_handler(Filename, filename_basename, [Filename], State);
+
+handle_call({filename, basename, [Filename, Ext]}, _From, State) ->
+    safe_call_handler(Filename, filename_basename, [Filename, Ext], State);
+
+handle_call({filename, dirname, [Filename]}, _From, State) ->
+    safe_call_handler(Filename, filename_dirname, [Filename], State);
+
+handle_call({filename, extension, [Filename]}, _From, State) ->
+    safe_call_handler(Filename, filename_extension, [Filename], State);
+
+handle_call({filename, join, [Components]}, _From, State) ->
+    safe_call_handler(hd(Components), filename_join, [Components], State);
+
+handle_call({filename, join, [Name1, Name2]}, _From, State) ->
+    safe_call_handler(Name1, filename_join, [Name1, Name2], State);
+
+handle_call({filename, append, [Dir, Name]}, _From, State) ->
+    safe_call_handler(Dir, filename_append, [Dir, Name], State);
+
+handle_call({filename, pathtype, [Path]}, _From, State) ->
+    safe_call_handler(Path, filename_pathtype, [Path], State);
+
+handle_call({filename, rootname, [Filename]}, _From, State) ->
+    safe_call_handler(Filename, filename_rootname, [Filename], State);
+
+handle_call({filename, rootname, [Filename, Ext]}, _From, State) ->
+    safe_call_handler(Filename, filename_rootname, [Filename, Ext], State);
+
+handle_call({filename, split, [Filename]}, _From, State) ->
+    safe_call_handler(Filename, filename_split, [Filename], State);
+
+handle_call({filename, nativename, [Filename]}, _From, State) ->
+    safe_call_handler(Filename, filename_nativename, [Filename], State);
+
+handle_call({filename, find_src, Args}, _From, State) ->
+    {reply, apply(filename_1,find_src, Args), State};
+
+handle_call({filename, flatten, [Filename]}, _From, State) ->
+    safe_call_handler(Filename, filename_flatten, [Filename], State);
+
+%%
 
 handle_call({open, Filename, ModeList}, _From, State) ->
     call_handler(Filename, open, [Filename, ModeList], State);
@@ -230,3 +290,16 @@ call_handler(Filename, Function, Arguments, #state{ handlers = Handlers } = Stat
         {false, Handlers1} ->
             {reply, {error, notsup}, State#state{ handlers = Handlers1 }}
     end.
+
+safe_call_handler(Filename, Function, Arguments, 
+                  #state{ handlers = Handlers } = State) ->
+    case (catch call_handler(Filename, Function, Arguments, State)) of
+        {'EXIT',{undef, _}} ->
+            call_handler(Filename, Function, Arguments, 
+                         State#state{ 
+                           handlers = tl(Handlers)
+                          });
+        Result ->
+            Result
+    end.
+
