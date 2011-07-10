@@ -84,6 +84,8 @@ code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
 %% Private
+file_request(Request, Module, Handle) when is_atom(Request) ->
+    file_request({Request}, Module, Handle);
 file_request(Request, Module, Handle) ->
     Command = element(1, Request),
     Args = tl(tuple_to_list(Request)),
