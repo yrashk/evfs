@@ -29,5 +29,5 @@ a behaviour for file I/O (`file_request` and `io_request`). Not that it blocks y
 from creating your VFS. It just will make it simpler. Right now you have to look into
 file_io_server.erl from OTP in order to figure out how to do this.
 
-For an example on how to build a VFS, look into `tests/evfs_test_fs.erl`. Hopefully
+For an example on how to build a VFS, look into `test/evfs_test_fs.erl`. Hopefully
 it will help.
