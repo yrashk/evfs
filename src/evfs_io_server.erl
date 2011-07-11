@@ -91,7 +91,12 @@ file_request(Request, Module, Handle) ->
     Args = tl(tuple_to_list(Request)),
     case (catch apply(Module, Command, Args ++ [Handle])) of
         {'EXIT', {undef, _}} ->
-            file_request(Request, evfs_iolist_io_server, Module:io_list(Handle));
+            case file_request(Request, evfs_iolist_io_server, Module:io_list(Handle)) of
+                {Reply, Result, _Handle1} ->
+                    {Reply, Result, Handle};
+                {stop, Reason, Result, _Handle1} ->
+                    {stop, Reason, Result, Handle}
+            end;
          Result ->
             Result
     end.
@@ -108,7 +113,12 @@ io_request(Request, Module, Handle) ->
     Args = tl(tuple_to_list(Request)),
     case (catch apply(Module, Command, Args ++ [Handle])) of
         {'EXIT', {undef, _}} ->
-            io_request(Request, evfs_iolist_io_server, Module:io_list(Handle));
-         Result ->
+            case io_request(Request, evfs_iolist_io_server, Module:io_list(Handle)) of
+                {Reply, Result, _Handle1} ->
+                    {Reply, Result, Handle};
+                {stop, Reason, Result, _Handle1} ->
+                    {stop, Reason, Result, Handle}
+            end;
+        Result ->
             Result
     end.
