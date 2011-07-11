@@ -29,7 +29,6 @@ start_link(FileServer) ->
 -spec init(pid()) -> {ok, state()} | {stop, term()}.
 
 init(FileServer) ->
-    code:ensure_loaded(evfs_io_server),
     case ?DEFAULT_HANDLER:init(FileServer) of
         {ok, HState} ->
             {ok, #state{ handlers = [{?DEFAULT_HANDLER, HState}], file_server = FileServer }};
@@ -98,119 +97,119 @@ handle_call(original_file_server, _From,
             #state{ file_server = FileServer } = State) ->
     {reply, FileServer, State };
 
-handle_call({filename, absname, [Filename]}, _From, State) ->
-    safe_call_handler(Filename, filename_absname, [Filename], State);
+handle_call({filename, absname, [Filename]}, From, State) ->
+    safe_call_handler(From, Filename, filename_absname, [Filename], State);
 
-handle_call({filename, absname, [Filename, Dir]}, _From, State) ->
-    safe_call_handler(Filename, filename_absname, [Filename, Dir], State);
+handle_call({filename, absname, [Filename, Dir]}, From, State) ->
+    safe_call_handler(From, Filename, filename_absname, [Filename, Dir], State);
 
-handle_call({filename, absname_join, [Dir, Filename]}, _From, State) ->
-    safe_call_handler(Dir, filename_absname_join, [Dir, Filename], State);
+handle_call({filename, absname_join, [Dir, Filename]}, From, State) ->
+    safe_call_handler(From, Dir, filename_absname_join, [Dir, Filename], State);
 
-handle_call({filename, basename, [Filename]}, _From, State) ->
-    safe_call_handler(Filename, filename_basename, [Filename], State);
+handle_call({filename, basename, [Filename]}, From, State) ->
+    safe_call_handler(From, Filename, filename_basename, [Filename], State);
 
-handle_call({filename, basename, [Filename, Ext]}, _From, State) ->
-    safe_call_handler(Filename, filename_basename, [Filename, Ext], State);
+handle_call({filename, basename, [Filename, Ext]}, From, State) ->
+    safe_call_handler(From, Filename, filename_basename, [Filename, Ext], State);
 
-handle_call({filename, dirname, [Filename]}, _From, State) ->
-    safe_call_handler(Filename, filename_dirname, [Filename], State);
+handle_call({filename, dirname, [Filename]}, From, State) ->
+    safe_call_handler(From, Filename, filename_dirname, [Filename], State);
 
-handle_call({filename, extension, [Filename]}, _From, State) ->
-    safe_call_handler(Filename, filename_extension, [Filename], State);
+handle_call({filename, extension, [Filename]}, From, State) ->
+    safe_call_handler(From, Filename, filename_extension, [Filename], State);
 
-handle_call({filename, join, [Components]}, _From, State) ->
-    safe_call_handler(hd(Components), filename_join, [Components], State);
+handle_call({filename, join, [Components]}, From, State) ->
+    safe_call_handler(From, hd(Components), filename_join, [Components], State);
 
-handle_call({filename, join, [Name1, Name2]}, _From, State) ->
-    safe_call_handler(Name1, filename_join, [Name1, Name2], State);
+handle_call({filename, join, [Name1, Name2]}, From, State) ->
+    safe_call_handler(From, Name1, filename_join, [Name1, Name2], State);
 
-handle_call({filename, append, [Dir, Name]}, _From, State) ->
-    safe_call_handler(Dir, filename_append, [Dir, Name], State);
+handle_call({filename, append, [Dir, Name]}, From, State) ->
+    safe_call_handler(From, Dir, filename_append, [Dir, Name], State);
 
-handle_call({filename, pathtype, [Path]}, _From, State) ->
-    safe_call_handler(Path, filename_pathtype, [Path], State);
+handle_call({filename, pathtype, [Path]}, From, State) ->
+    safe_call_handler(From, Path, filename_pathtype, [Path], State);
 
-handle_call({filename, rootname, [Filename]}, _From, State) ->
-    safe_call_handler(Filename, filename_rootname, [Filename], State);
+handle_call({filename, rootname, [Filename]}, From, State) ->
+    safe_call_handler(From, Filename, filename_rootname, [Filename], State);
 
-handle_call({filename, rootname, [Filename, Ext]}, _From, State) ->
-    safe_call_handler(Filename, filename_rootname, [Filename, Ext], State);
+handle_call({filename, rootname, [Filename, Ext]}, From, State) ->
+    safe_call_handler(From, Filename, filename_rootname, [Filename, Ext], State);
 
-handle_call({filename, split, [Filename]}, _From, State) ->
-    safe_call_handler(Filename, filename_split, [Filename], State);
+handle_call({filename, split, [Filename]}, From, State) ->
+    safe_call_handler(From, Filename, filename_split, [Filename], State);
 
-handle_call({filename, nativename, [Filename]}, _From, State) ->
-    safe_call_handler(Filename, filename_nativename, [Filename], State);
+handle_call({filename, nativename, [Filename]}, From, State) ->
+    safe_call_handler(From, Filename, filename_nativename, [Filename], State);
 
 handle_call({filename, find_src, Args}, _From, State) ->
     {reply, apply(filename_1,find_src, Args), State};
 
-handle_call({filename, flatten, [Filename]}, _From, State) ->
-    safe_call_handler(Filename, filename_flatten, [Filename], State);
+handle_call({filename, flatten, [Filename]}, From, State) ->
+    safe_call_handler(From, Filename, filename_flatten, [Filename], State);
 
 %%
 
-handle_call({open, Filename, ModeList}, _From, State) ->
-    call_handler(Filename, open, [Filename, ModeList], State);
+handle_call({open, Filename, ModeList}, From, State) ->
+    call_handler(From, Filename, open, [Filename, ModeList], State);
 
-handle_call({read_file, Filename}, _From, State) ->
-    call_handler(Filename, read_file, [Filename], State);
+handle_call({read_file, Filename}, From, State) ->
+    call_handler(From, Filename, read_file, [Filename], State);
 
-handle_call({write_file, Filename, Bin}, _From, State) ->
-    call_handler(Filename, write_file, [Filename, Bin], State);
+handle_call({write_file, Filename, Bin}, From, State) ->
+    call_handler(From, Filename, write_file, [Filename, Bin], State);
 
-handle_call({set_cwd, Filename}, _From, State) ->
-    call_handler(Filename, set_cwd, [Filename], State);
+handle_call({set_cwd, Filename}, From, State) ->
+    call_handler(From, Filename, set_cwd, [Filename], State);
 
-handle_call({delete, Filename}, _From, State) ->
-    call_handler(Filename, delete, [Filename], State);
+handle_call({delete, Filename}, From, State) ->
+    call_handler(From, Filename, delete, [Filename], State);
 
-handle_call({rename, Fr, To}, _From, State) ->
-    call_handler(Fr, rename, [Fr, To], State);
+handle_call({rename, Fr, To}, From, State) ->
+    call_handler(From, Fr, rename, [Fr, To], State);
 
-handle_call({make_dir, Filename}, _From, State) ->
-    call_handler(Filename, make_dir, [Filename], State);
+handle_call({make_dir, Filename}, From, State) ->
+    call_handler(From, Filename, make_dir, [Filename], State);
 
-handle_call({del_dir, Filename}, _From, State) ->
-    call_handler(Filename, del_dir, [Filename], State);
+handle_call({del_dir, Filename}, From, State) ->
+    call_handler(From, Filename, del_dir, [Filename], State);
 
-handle_call({list_dir, Filename}, _From, State) ->
-    call_handler(Filename, list_dir, [Filename], State);
+handle_call({list_dir, Filename}, From, State) ->
+    call_handler(From, Filename, list_dir, [Filename], State);
 
-handle_call(get_cwd, _From, State) ->
-    call_handler("/", get_cwd, [], State);
+handle_call(get_cwd, From, State) ->
+    call_handler(From, "/", get_cwd, [], State);
 
-handle_call({get_cwd}, _From, State) ->
-    call_handler("/", get_cwd, [], State);
+handle_call({get_cwd}, From, State) ->
+    call_handler(From, "/", get_cwd, [], State);
 
-handle_call({get_cwd, Filename}, _From, State) ->
-    call_handler(Filename, get_cwd, [Filename], State);
+handle_call({get_cwd, Filename}, From, State) ->
+    call_handler(From, Filename, get_cwd, [Filename], State);
 
-handle_call({read_file_info, Filename}, _From, State) ->
-    call_handler(Filename, read_file_info, [Filename], State);
+handle_call({read_file_info, Filename}, From, State) ->
+    call_handler(From, Filename, read_file_info, [Filename], State);
 
-handle_call({altname, Filename}, _From, State) ->
-    call_handler(Filename, altname, [Filename], State);
+handle_call({altname, Filename}, From, State) ->
+    call_handler(From, Filename, altname, [Filename], State);
 
-handle_call({write_file_info, Filename, Info}, _From, State) ->
-    call_handler(Filename, write_file_info, [Filename, Info], State);
+handle_call({write_file_info, Filename, Info}, From, State) ->
+    call_handler(From, Filename, write_file_info, [Filename, Info], State);
 
-handle_call({read_link_info, Filename}, _From, State) ->
-    call_handler(Filename, read_link_info, [Filename], State);
+handle_call({read_link_info, Filename}, From, State) ->
+    call_handler(From, Filename, read_link_info, [Filename], State);
 
-handle_call({read_link, Filename}, _From, State) ->
-    call_handler(Filename, read_link, [Filename], State);
+handle_call({read_link, Filename}, From, State) ->
+    call_handler(From, Filename, read_link, [Filename], State);
 
-handle_call({make_link, Old, New}, _From, State) ->
-    call_handler(Old, make_link, [Old, New], State);
+handle_call({make_link, Old, New}, From, State) ->
+    call_handler(From, Old, make_link, [Old, New], State);
 
-handle_call({make_symlink, Old, New}, _From, State) ->
-    call_handler(Old, make_symlink, [Old, New], State);
+handle_call({make_symlink, Old, New}, From, State) ->
+    call_handler(From, Old, make_symlink, [Old, New], State);
 
 handle_call({copy, SourceName, SourceOpts, DestName, DestOpts, Length},
-            _From, State) ->
-    call_handler(SourceName, copy, [SourceName, SourceOpts, DestName, DestOpts, Length], State);
+            From, State) ->
+    call_handler(From, SourceName, copy, [SourceName, SourceOpts, DestName, DestOpts, Length], State);
 
 handle_call(stop, _From, State) ->
     {stop, normal, stopped, State};
@@ -292,6 +291,17 @@ call_handler(Filename, Function, Arguments, #state{ handlers = Handlers } = Stat
             {reply, {error, notsup}, State#state{ handlers = Handlers1 }}
     end.
 
+-spec call_handler(term(), file:filename(), atom(), [term()], state()) -> {reply, term(), state()}.
+
+call_handler(From, Filename, Function, Arguments, State) ->
+    spawn_link(fun () ->
+                       {reply, Result, State1} = call_handler(Filename, Function, Arguments, State),
+                       gen_server:reply(From, Result)
+               end),
+    {noreply, State}.
+    
+-spec safe_call_handler(file:filename(), atom(), [term()], state()) -> {reply, term(), state()}.
+
 safe_call_handler(Filename, Function, Arguments, 
                   #state{ handlers = Handlers } = State) ->
     case (catch call_handler(Filename, Function, Arguments, State)) of
@@ -304,3 +314,11 @@ safe_call_handler(Filename, Function, Arguments,
             Result
     end.
 
+-spec safe_call_handler(term(), file:filename(), atom(), [term()], state()) -> {reply, term(), state()}.
+
+safe_call_handler(From, Filename, Function, Arguments, State) ->
+    spawn_link(fun () ->
+                       {reply, Result, State1} = safe_call_handler(Filename, Function, Arguments, State),
+                       gen_server:reply(From, Result)
+               end),
+    {noreply, State}.
