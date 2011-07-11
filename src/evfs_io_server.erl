@@ -108,7 +108,7 @@ io_request(Request, Module, Handle) ->
     Args = tl(tuple_to_list(Request)),
     case (catch apply(Module, Command, Args ++ [Handle])) of
         {'EXIT', {undef, _}} ->
-            file_request(Request, evfs_iolist_io_server, Module:io_list(Handle));
+            io_request(Request, evfs_iolist_io_server, Module:io_list(Handle));
          Result ->
             Result
     end.
