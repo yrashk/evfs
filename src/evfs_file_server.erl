@@ -29,6 +29,7 @@ start_link(FileServer) ->
 -spec init(pid()) -> {ok, state()} | {stop, term()}.
 
 init(FileServer) ->
+    code:ensure_loaded(evfs_io_server),
     case ?DEFAULT_HANDLER:init(FileServer) of
         {ok, HState} ->
             {ok, #state{ handlers = [{?DEFAULT_HANDLER, HState}], file_server = FileServer }};
