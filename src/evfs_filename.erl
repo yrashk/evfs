@@ -12,7 +12,7 @@ load() ->
     {ok,{filename,[{abstract_code,{raw_abstract_v1, Abs0}}]}} =
         beam_lib:chunks(Original, [abstract_code]),
     Abs = lists:keyreplace(module, 3, Abs0, {attribute, 1, module, filename_1}),
-    {ok, filename, Bin0} = compile:forms(Abs0),
+    {filename, Bin0, _Filename} = code:get_object_code(filename),
     {ok, filename_1, Bin1} = compile:forms(Abs),
     %%
 
