@@ -28,6 +28,10 @@ t_filename() ->
     evfs:register(evfs_test_fs, []),
     ?assertEqual("test://", filename:dirname("test://any")).
 
+t_filename_fallback() ->    
+    evfs:register(evfs_test_fs, []),
+    ?assertEqual("any", filename:basename("test://any")).
+
 evfs_test_() ->
     {foreach,
      fun () ->
@@ -41,7 +45,8 @@ evfs_test_() ->
       {"file:// scheme should route to the default file server", ?_test(t_file_scheme())},
       {"test_fs read_file", ?_test(t_read_file())},
       {"test_fs pread", ?_test(t_pread())},
-      {"test_fs & default fs filename", ?_test(t_filename())}
+      {"test_fs & default fs filename", ?_test(t_filename())},
+      {"filename fallback", ?_test(t_filename_fallback())}
      ]
     }.
 
