@@ -12,7 +12,8 @@ Or this:
 
 Looks interesting, right? Now, basically, because of the way evfs operates,
 you can feed unsuspecting Erlang code file names that are served off your VFSes. 
-That's where the fun begins.
+That's where the fun begins. (By the way, there's already some limited support 
+for HTTP, just register `evfs_httpc_handler`: `evfs:register(evfs_httpc_handler, default)`).
 
 Also, the way evfs is organized, you are not limited to this "scheme" way of overriding the
 filesystem. You can override particular files, for example, or whole directories -- or
