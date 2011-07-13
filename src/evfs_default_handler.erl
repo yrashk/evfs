@@ -1,7 +1,7 @@
 -module(evfs_default_handler).
 -behaviour(evfs_handler).
 -export([init/1, supports/2, terminate/2]).
--export([open/3, 
+-export([open/4, 
          read_file/2,
          write_file/3,
          set_cwd/2,
@@ -49,8 +49,20 @@ supports(_, State) ->
 
 %% Filesystem API
 
-open(Filename, Mode, FileServer) ->
-    {ok, gen_server:call(FileServer, {open, filename(Filename), Mode}), FileServer}.
+-define(FILE_IO_SERVER_TABLE, file_io_servers).
+-define(FILE_IO_SERVER, file_io_server).  % Module
+
+open(Pid, Filename, Mode, FileServer) ->
+    %% Had to copy this from file_server.erl to avoid direct linking
+    %% to the process spawned in evfs_file_server
+    Child = ?FILE_IO_SERVER:start_link(Pid, Filename, Mode),
+    case Child of
+        {ok, P} when is_pid(P) ->
+            ets:insert(?FILE_IO_SERVER_TABLE, {P, Filename});
+        _ ->
+            ok
+    end,
+    {ok, Child, FileServer}.
 
 read_file(Filename, FileServer) ->
     {ok, gen_server:call(FileServer, {read_file, filename(Filename)}), FileServer}.

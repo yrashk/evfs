@@ -2,7 +2,7 @@
 -behaviour(evfs_handler).
 -behaviour(evfs_io_server).
 -export([init/1, supports/2, terminate/2]).
--export([open/3, 
+-export([open/4, 
          read_file/2,
          write_file/3,
          set_cwd/2,
@@ -35,7 +35,7 @@ supports(_, State) ->
 
 %% Filesystem API
 
-open(Filename, _Mode, State) ->
+open(_Pid, Filename, _Mode, State) ->
     Child = evfs_io_server:start_link(?MODULE, Filename),
     {ok, Child, State}.
 

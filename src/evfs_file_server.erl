@@ -150,8 +150,8 @@ handle_call({filename, flatten, [Filename]}, From, State) ->
 
 %%
 
-handle_call({open, Filename, ModeList}, From, State) ->
-    call_handler(From, Filename, open, [Filename, ModeList], State);
+handle_call({open, Filename, ModeList}, {Pid, _Tag} = From, State) ->
+    call_handler(From, Filename, open, [Pid, Filename, ModeList], State);
 
 handle_call({read_file, Filename}, From, State) ->
     call_handler(From, Filename, read_file, [Filename], State);

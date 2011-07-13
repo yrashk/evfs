@@ -1,7 +1,7 @@
 -module(evfs_httpc_handler).
 -behaviour(evfs_handler).
 -export([init/1, supports/2, terminate/2]).
--export([open/3, 
+-export([open/4, 
          read_file/2,
          write_file/3,
          set_cwd/2,
@@ -56,7 +56,7 @@ supports(_, State) ->
 
 %% Filesystem API
 
-open(Filename, _Mode, Profile) ->
+open(_Pid, Filename, _Mode, Profile) -> %% TODO: use this Pid
     Child = evfs_io_server:start_link(?MODULE, {Filename, Profile}),
     {ok, Child, Profile}.
 

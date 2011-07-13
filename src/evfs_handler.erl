@@ -6,7 +6,7 @@ behaviour_info(callbacks) ->
      {supports, 2},
      {terminate, 2},
      %% File system API
-     {open,3}, 
+     {open,4}, 
      {read_file,2},
      {write_file,3},
      {set_cwd,2},
