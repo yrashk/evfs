@@ -23,5 +23,5 @@ prep_stop({_FileServer, _OriginalFileServer, Filename} = State) ->
     State.
 
 stop({_FileServer, OriginalFileServer, _Filename}) ->
-    ok = register(?FILE_SERVER, OriginalFileServer),
+    true = register(?FILE_SERVER, OriginalFileServer),
     ok.
