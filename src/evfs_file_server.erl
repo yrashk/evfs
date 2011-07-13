@@ -295,7 +295,7 @@ call_handler(Filename, Function, Arguments, #state{ handlers = Handlers } = Stat
 
 call_handler(From, Filename, Function, Arguments, State) ->
     spawn_link(fun () ->
-                       {reply, Result, State1} = call_handler(Filename, Function, Arguments, State),
+                       {reply, Result, _State1} = call_handler(Filename, Function, Arguments, State),
                        gen_server:reply(From, Result)
                end),
     {noreply, State}.
@@ -318,7 +318,7 @@ safe_call_handler(Filename, Function, Arguments,
 
 safe_call_handler(From, Filename, Function, Arguments, State) ->
     spawn_link(fun () ->
-                       {reply, Result, State1} = safe_call_handler(Filename, Function, Arguments, State),
+                       {reply, Result, _State1} = safe_call_handler(Filename, Function, Arguments, State),
                        gen_server:reply(From, Result)
                end),
     {noreply, State}.
